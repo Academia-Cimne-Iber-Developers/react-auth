@@ -7,9 +7,14 @@ function Profile() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const preAuthToken = localStorage.getItem("preAuthToken");
         fetch("http://127.0.0.1:5000/me", {
             method: "GET",
-            credentials: "include", // Incluye las cookies en la petición (necesario para mantener la sesión)
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${preAuthToken}`,
+            },
+            credentials: "include", // to ensure cookies are sent
         })
             .then((response) => {
                 if (response.status === 401) {
@@ -30,7 +35,7 @@ function Profile() {
 
     function logout() {
         fetch("http://127.0.0.1:5000/logout", {
-            method: "POST",
+            method: "GET",
             credentials: "include",
         })
             .then((response) => response.json())
@@ -50,7 +55,7 @@ function Profile() {
                     <div>
                         <h1 className="profile-heading">User Profile</h1>
                         <p className="profile-text">
-                            Nombre de usuario: {user.username}
+                            Username: {user.username}
                         </p>
                         <p className="profile-text">Email: {user.email}</p>
                         <button className="profile-button" onClick={logout}>
