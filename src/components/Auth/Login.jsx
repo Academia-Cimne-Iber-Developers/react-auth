@@ -1,26 +1,37 @@
-import React from "react";
-//import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import "./Login.css";
 
 function Login() {
-    const generateUniqueToken = () => {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    };
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get("status");
+
+        if (status === "success") {
+            localStorage.setItem("isLoggedIn", "true");
+            window.location.href = "/profile";
+        }
+    }, []);
 
     const handleGoogleLogin = () => {
-        const preAuthToken = generateUniqueToken();
-        localStorage.setItem("preAuthToken", preAuthToken);
-        //alert("preAuthToken: " + preAuthToken);
+        const width = 500;
+        const height = 600;
+        const left = window.innerWidth / 2 - width / 2;
+        const top = window.innerHeight / 2 - height / 2;
 
-        const fromUrl = encodeURIComponent("http://localhost:5173/profile");
-        window.location.href = `http://127.0.0.1:5000/login?state=${preAuthToken}`;
+        const origin = encodeURIComponent(window.location.origin);
+
+        window.open(
+            `http://127.0.0.1:5000/login?origin=${origin}`,
+            "GoogleLogin",
+            `width=${width},height=${height},top=${top},left=${left}`
+        );
     };
 
     return (
-        <>
-            <div className="login-container container">
-                <div className="container">
-                    <div className="row justify-content-center">
+        <div className="login-container container">
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div>
                         <div>
                             <div className="form-group">
                                 <button
@@ -33,16 +44,13 @@ function Login() {
                             <div className="mt-3" style={{ fontSize: "15px" }}>
                                 <br />
                                 Si no tiene una cuenta, puedes{" "}
-                                <a href={`http://127.0.0.1:5000/signup`}>
-                                    crear una aquí
-                                </a>
-                                .
+                                <a href="#">crear una aquí</a>.
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

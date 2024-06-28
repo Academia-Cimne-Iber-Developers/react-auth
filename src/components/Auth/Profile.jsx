@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import "./Profile.css";
 
 function Profile() {
@@ -7,24 +8,29 @@ function Profile() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const preAuthToken = localStorage.getItem("preAuthToken");
         fetch("http://127.0.0.1:5000/me", {
             method: "GET",
             headers: {
                 "Content-type": "application/json",
-                Authorization: `Bearer ${preAuthToken}`,
             },
             credentials: "include", // to ensure cookies are sent
         })
             .then((response) => {
                 if (response.status === 401) {
                     setUser(null);
-                } else {
-                    return response.json();
+                    setIsLoading(false);
                 }
+
+                return response.json();
             })
             .then((data) => {
-                setUser(data);
+                if (data.user) {
+                    setUser(data.user);
+                }
+                console.log(data);
+                if (data.message) {
+                    setError(data.message);
+                }
                 setIsLoading(false);
             })
             .catch((e) => {
@@ -40,13 +46,11 @@ function Profile() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 setUser(null);
             });
     }
 
-    if (isLoading) return <div className="loading-message">Loading...</div>;
-    if (error) return <div className="error-message">Error: {error}</div>;
+    if (isLoading) return <div className="loading-message">Cargando...</div>;
 
     return (
         <div className="profile-container">
@@ -72,13 +76,6 @@ function Profile() {
                                 }
                             >
                                 Iniciar sesión
-                            </button>
-                            <button
-                                onClick={() =>
-                                    (window.location.href = "/signup")
-                                }
-                            >
-                                Registrarse
                             </button>
                         </div>
                     </div>
