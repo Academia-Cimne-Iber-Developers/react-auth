@@ -13,7 +13,7 @@ function Profile() {
             headers: {
                 "Content-type": "application/json",
             },
-            credentials: "include", // to ensure cookies are sent
+            credentials: "include",
         })
             .then((response) => {
                 if (response.status === 401) {
@@ -27,7 +27,6 @@ function Profile() {
                 if (data.user) {
                     setUser(data.user);
                 }
-                console.log(data);
                 if (data.message) {
                     setError(data.message);
                 }

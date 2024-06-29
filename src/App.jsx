@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Login from "./components/Auth/Login";
 import Profile from "./components/Auth/Profile";
 
